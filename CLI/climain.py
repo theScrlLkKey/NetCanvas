@@ -1,5 +1,6 @@
 import sys
 import random
+import time
 
 # move with arrow keys, 1-9 to cycle colors, space to set color. return cursor when done updating from server
 
@@ -11,6 +12,7 @@ def fast_output(text):
 
 def output_canvas(rows=40, columns=100):
     # update canvas using fastoutput, iterate through and parse into outputtable chars/locations
+    output_str = ""
     for y in range(rows):
         for x in range(columns):
             fast_output(f"\033[{y};{x}H")
@@ -45,5 +47,6 @@ canvas = []
 generate_canvas()  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
 
 while True:  # begin mainloop
-    fast_output("\033[2J")
+    randomize_canvas()
     output_canvas()   # instead of redrawing, only get changed pixels and update those
+    # time.sleep(0.1)
