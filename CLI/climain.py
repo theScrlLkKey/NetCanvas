@@ -1,6 +1,8 @@
 import sys
 import random
 import time
+from pynput.keyboard import Listener, Key
+import threading
 
 
 # move with arrow keys, 1-9 to cycle colors, space to set color. return cursor when done updating from server
@@ -16,9 +18,10 @@ def output_canvas(rows=40, columns=100):
     output_str = ""
     for y in range(rows):
         for x in range(columns):
-            fast_output(f"\033[{y};{x}H")
-            fast_output(f"\033[{canvas[y][x]}m█")
-        fast_output("\n")
+            output_str += f"\033[{y};{x}H"
+            output_str += f"\033[{canvas[y][x]}m█"
+        output_str += "\n"
+    fast_output(output_str)
     fast_output("\033[39m")
 
 
@@ -44,10 +47,31 @@ def change_character(row=20, column=50, value="34"):
     canvas[row][column] = value
 
 
+def on_press(key):
+    # 1-9 here
+    if key == Key.space:  # set color
+        pass
+    elif key == Key.left:
+        fast_output('\033[1D')
+    elif key == Key.right:
+        fast_output('\033[1C')
+    elif key == Key.up:
+        fast_output('\033[1A')
+    elif key == Key.down:
+        fast_output('\033[1B')
+
+
+def start_key_press():
+    with Listener(on_press=on_press) as listener:
+        listener.join()
+
+
 canvas = []
 generate_canvas()  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
 
-while True:  # begin mainloop
-    randomize_canvas()
+key_press_sub = threading.Thread(target=start_key_press, args=())
+key_press_sub.start()  # send updates here
+
+while True:  # begin mainloop, get updates here
     output_canvas()   # instead of redrawing, only get changed pixels and update those
-    # time.sleep(0.1)
+    time.sleep(0.1)
