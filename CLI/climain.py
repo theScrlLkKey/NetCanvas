@@ -67,7 +67,7 @@ def on_press(key):
     # 1-4, q-r, a-f, z-v for primary draw, 5-8, t-i, g-k, b-, for secondary draw
     if hasattr(key, 'char'):  # Write the character pressed if available
         key_color = str(key.char)
-        # todo: determine if prim or sec keys, use correct dict/current color var (is keycolor in prim or sec dict)
+        # todo: determine if primary or secondary keys, use correct dictionary/current color variable (is keycolor in primary or secondary dictionary)
         curs_color = colors[prim_color_key_dict[key_color]]
     elif key == Key.space:  # set color
         change_character(curs_y-1, curs_x-1, curs_color)  # -1 because curs_xy is terminal (index at 1) and canvas indexes at 0
