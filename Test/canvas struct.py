@@ -7,42 +7,38 @@ def fast_output(text):
     sys.stdout.flush()
 
 
-def output_canvas():
+def output_canvas(rows=40, columns=100):
     # update canvas using fastoutput, iterate through and parse into outputtable chars/locations
-    for y in range(40):
-        for x in range(100):
+    for y in range(rows):
+        for x in range(columns):
             fast_output(f"\033[{y};{x}H")
             fast_output(f"\033[{canvas[y][x]}m█")
         fast_output("\n")
 
-def generateNewCanvas(rows=40,columns=100):
+
+def generate_canvas(rows=40, columns=100):
     # setup canvas, fill with blanks, 40x100 canvas for now
-    global canvas = []
+    global canvas
     for y in range(rows):
         row = []
         for x in range(columns):
             row.append("30")
 
-# setup canvas, fill with blanks, 40x100 canvas for now, replace with var in actual code, make init_canvas()
-canvas = []
-for y in range(40):
-    row = []
-    for x in range(100):
-        row.append("30")
-    canvas.append(row)
 
-def randomizeCanvas()
+def randomize_canvas(rows=40, columns=100):
     # rand color canvas
-    for y in range(40):
-        for x in range(100):
-            global canvas[y][x] = str(random.randint(90, 97))
+    global canvas
+    for y in range(rows):
+        for x in range(columns):
+            canvas[y][x] = str(random.randint(90, 97))
+
+
+canvas = []
+generate_canvas()
+
 print(canvas)
 output_canvas()
 
-# rand color canvas
-for y in range(40):
-    for x in range(100):
-        canvas[y][x] = str(random.randint(90, 97))
-
+randomize_canvas()
 print(canvas)
 output_canvas()
