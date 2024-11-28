@@ -23,7 +23,7 @@ def generate_canvas(rows=40, columns=100):
         row = []
         for x in range(columns):
             row.append("30")
-
+        canvas.append(row)
 
 def randomize_canvas(rows=40, columns=100):
     # rand color canvas
