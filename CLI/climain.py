@@ -1,8 +1,2 @@
-import time
-import random
-import numpy
-import os
-import zlib
-import shutil
-import pickle
-import subprocess
+# move with arrow keys, 1-9 to cycle colors, space to set color. return cursor when done updating from server
+
