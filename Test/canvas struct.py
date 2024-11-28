@@ -35,13 +35,17 @@ def randomize_canvas(rows=40, columns=100):
             canvas[y][x] = str(random.randint(90, 97))
 
 
+def change_character(row=20, column=50,value="34"):
+    canvas[row][column] = value
+
+
 canvas = []
 generate_canvas()
 
-print(canvas)
+#print(canvas)
 output_canvas()
 
 # randomize_canvas()
-canvas[20][50] = "34"
-print(canvas)
+change_character(2,2,"34")
+#print(canvas)
 output_canvas()
