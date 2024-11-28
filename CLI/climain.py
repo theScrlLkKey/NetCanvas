@@ -15,6 +15,7 @@ def fast_output(text):
 
 def output_canvas(rows=40, columns=100):
     # update canvas using fastoutput, iterate through and parse into outputtable chars/locations
+    fast_output("\033[s")
     output_str = ""
     for y in range(rows):
         for x in range(columns):
@@ -23,6 +24,7 @@ def output_canvas(rows=40, columns=100):
         output_str += "\n"
     fast_output(output_str)
     fast_output("\033[39m")
+    fast_output("\033[u")
 
 
 def generate_canvas(rows=40, columns=100):
@@ -60,6 +62,8 @@ def on_press(key):
         fast_output('\033[1A')
     elif key == Key.down:
         fast_output('\033[1B')
+    elif key == Key.shift:
+        exit()
 
 
 def start_key_press():
@@ -70,7 +74,9 @@ def start_key_press():
 canvas = []
 generate_canvas()  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
 
-while True:  # begin mainloop
-    randomize_canvas()
+key_press_sub = threading.Thread(target=start_key_press, args=())
+key_press_sub.start()  # send updates here
+
+while True:  # begin mainloop, get updates here
     output_canvas()   # instead of redrawing, only get changed pixels and update those
-    # time.sleep(0.1)
+    time.sleep(0.5)
