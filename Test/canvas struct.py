@@ -14,7 +14,7 @@ def output_canvas(rows=40, columns=100):
             fast_output(f"\033[{y};{x}H")
             fast_output(f"\033[{canvas[y][x]}m█")
         fast_output("\n")
-
+    fast_output("\033[39m")
 
 def generate_canvas(rows=40, columns=100):
     # setup canvas, fill with blanks, 40x100 canvas for now
@@ -24,6 +24,7 @@ def generate_canvas(rows=40, columns=100):
         for x in range(columns):
             row.append("30")
         canvas.append(row)
+
 
 def randomize_canvas(rows=40, columns=100):
     # rand color canvas
@@ -40,5 +41,6 @@ print(canvas)
 output_canvas()
 
 randomize_canvas()
+
 print(canvas)
 output_canvas()
