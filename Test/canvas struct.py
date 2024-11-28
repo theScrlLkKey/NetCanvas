@@ -16,6 +16,7 @@ def output_canvas(rows=40, columns=100):
         fast_output("\n")
     fast_output("\033[39m")
 
+
 def generate_canvas(rows=40, columns=100):
     # setup canvas, fill with blanks, 40x100 canvas for now
     global canvas
@@ -40,7 +41,7 @@ generate_canvas()
 print(canvas)
 output_canvas()
 
-randomize_canvas()
-
+# randomize_canvas()
+canvas[20][50] = "34"
 print(canvas)
 output_canvas()
