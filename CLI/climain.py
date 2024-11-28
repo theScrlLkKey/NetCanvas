@@ -15,7 +15,6 @@ def fast_output(text):
 
 def output_canvas(rows=40, columns=100):
     # update canvas using fastoutput, iterate through and parse into outputtable chars/locations
-    fast_output("\033[s")
     output_str = ""
     for y in range(rows):
         for x in range(columns):
@@ -23,8 +22,6 @@ def output_canvas(rows=40, columns=100):
             output_str += f"\033[{canvas[y][x]}m█"
         output_str += "\n"
     fast_output(output_str)
-    fast_output("\033[39m")
-    fast_output("\033[u")
 
 
 def generate_canvas(rows=40, columns=100):
@@ -58,19 +55,15 @@ def on_press(key):
         change_character(curs_y, curs_x, "34")
     elif key == Key.left:
         if curs_x > 1:
-            fast_output('\033[1D')
             curs_x -= 1
     elif key == Key.right:
         if curs_x < canvas_cols-1:
             curs_x += 1
-            fast_output('\033[1C')
     elif key == Key.up:
         if curs_y > 1:
-            fast_output('\033[1A')
             curs_y -= 1
     elif key == Key.down:
         if curs_y < canvas_rows-1:
-            fast_output('\033[1B')
             curs_y += 1
     elif key == Key.home:
         exit()
@@ -96,4 +89,5 @@ key_press_sub.start()  # send updates here
 
 while True:  # begin mainloop, get updates here
     output_canvas(canvas_rows, canvas_cols)   # instead of redrawing, only get changed pixels and update those
-    time.sleep(0.5)
+    fast_output(f"\033[{curs_y};{curs_x}H")  # update cursor pos
+    time.sleep(0.1)
