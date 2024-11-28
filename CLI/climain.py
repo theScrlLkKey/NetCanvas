@@ -43,12 +43,8 @@ def change_character(row=20, column=50, value="34"):
 
 
 canvas = []
-generate_canvas()
+generate_canvas()  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
 
-# print(canvas)
-output_canvas()
-
-# randomize_canvas()
-change_character(2, 2, "34")
-# print(canvas)
-output_canvas()
+while True:  # begin mainloop
+    fast_output("\033[2J")
+    output_canvas()   # instead of redrawing, only get changed pixels and update those
