@@ -51,18 +51,28 @@ def change_character(row=20, column=50, value="34"):
 
 
 def on_press(key):
+    global curs_x
+    global curs_y
     # 1-9 here
     if key == Key.space:  # set color
-        pass
+        change_character(curs_y, curs_x, "34")
     elif key == Key.left:
-        fast_output('\033[1D')
+        if curs_x > 1:
+            fast_output('\033[1D')
+            curs_x -= 1
     elif key == Key.right:
-        fast_output('\033[1C')
+        if curs_x < canvas_cols-1:
+            curs_x += 1
+            fast_output('\033[1C')
     elif key == Key.up:
-        fast_output('\033[1A')
+        if curs_y > 1:
+            fast_output('\033[1A')
+            curs_y -= 1
     elif key == Key.down:
-        fast_output('\033[1B')
-    elif key == Key.shift:
+        if curs_y < canvas_rows-1:
+            fast_output('\033[1B')
+            curs_y += 1
+    elif key == Key.home:
         exit()
 
 
@@ -72,11 +82,18 @@ def start_key_press():
 
 
 canvas = []
-generate_canvas()  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
+canvas_rows = 20  # get these from server too
+canvas_cols = 50
+generate_canvas(canvas_rows, canvas_cols)  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
+output_canvas(canvas_rows, canvas_cols)
+
+fast_output("\033[0;0H")
+curs_x = 1
+curs_y = 1
 
 key_press_sub = threading.Thread(target=start_key_press, args=())
 key_press_sub.start()  # send updates here
 
 while True:  # begin mainloop, get updates here
-    output_canvas()   # instead of redrawing, only get changed pixels and update those
+    output_canvas(canvas_rows, canvas_cols)   # instead of redrawing, only get changed pixels and update those
     time.sleep(0.5)
