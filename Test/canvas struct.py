@@ -6,4 +6,4 @@ def fast_output(text):
     sys.stdout.flush()
 
 
-
+canvas = []
