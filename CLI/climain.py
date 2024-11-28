@@ -40,7 +40,8 @@ def randomize_canvas(rows=40, columns=100):
     global canvas
     for y in range(rows):
         for x in range(columns):
-            canvas[y][x] = str(random.randint(90, 97))
+            colors = [30,31,32,33,34,35,36,37,90,91,92,93,94,95,96,97]
+            canvas[y][x] = str(colors[random.randint(0, 15)])
 
 
 def change_character(row=20, column=50, value="34"):
@@ -69,9 +70,7 @@ def start_key_press():
 canvas = []
 generate_canvas()  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
 
-key_press_sub = threading.Thread(target=start_key_press, args=())
-key_press_sub.start()  # send updates here
-
-while True:  # begin mainloop, get updates here
+while True:  # begin mainloop
+    randomize_canvas()
     output_canvas()   # instead of redrawing, only get changed pixels and update those
-    time.sleep(0.1)
+    # time.sleep(0.1)
