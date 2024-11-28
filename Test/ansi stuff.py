@@ -18,3 +18,13 @@ print("\\033[1m                          - Bold on")
 print("\\033[21m                         - Bold off")
 
 print("\033[34mtext")
+print("\033[34mtext")
+
+import sys
+
+def fast_output(text):
+    sys.stdout.write(text)
+    sys.stdout.flush()
+
+fast_output("\033[35mfasttext")
+fast_output("\033[35mfasttext")
