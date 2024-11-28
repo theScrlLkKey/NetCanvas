@@ -1,6 +1,5 @@
 import time
 import random
-from os import getcwd
 import numpy
 import os
 import zlib
