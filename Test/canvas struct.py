@@ -11,8 +11,6 @@ def output_canvas():
     pass  # update canvas using fastoutput, iterate through and parse into outputtable chars/locations
 
 
-# canvas[10][20] = "30"
-# print(canvas)
 # setup canvas, fill with blanks, 40x100 canvas for now
 canvas = []
 for y in range(40):
@@ -21,5 +19,11 @@ for y in range(40):
         row.append("30")
     canvas.append(row)
 
+print(canvas)
+
+# rand color canvas
+for y in range(40):
+    for x in range(100):
+        canvas[y][x] = str(random.randint(90, 97))
 
 print(canvas)
