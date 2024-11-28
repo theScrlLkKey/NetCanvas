@@ -16,3 +16,5 @@ print("\\033[4m                          - Underline on")
 print("\\033[24m                         - Underline off\n")
 print("\\033[1m                          - Bold on")
 print("\\033[21m                         - Bold off")
+
+print("\033[34mtext")
