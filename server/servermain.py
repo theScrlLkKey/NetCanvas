@@ -1,1 +1,1 @@
-# sync canvas across clients
+# sync canvas across clients, use tls
