@@ -20,19 +20,19 @@ def output_canvas(rows=40, columns=100):
     output_str = ""
     for y in range(rows):
         for x in range(columns):
-            output_str += f"\033[{y+1};{x+1}H"  # +1 because terminal indexes at 1 not 0
-            output_str += f"\033[{canvas[y][x]}m█"
+            output_str += f"\033[{y+1};{(x*2)+1}H"  # +1 because terminal indexes at 1 not 0
+            output_str += f"\033[{canvas[y][x]}m██"
         output_str += "\n"
     fast_output(output_str)
 
 
 def output_pixel(row=20, column=50, color="34", mode="solid"):  # use for cursor and also individual pixel update
     if mode == "solid":
-        fast_output(f"\033[{row};{column}H\033[{canvas[row-1][column-1]}m█")  # -1 because terminal indexes at 1
+        fast_output(f"\033[{row};{(column*2)-1}H\033[{canvas[row-1][column-1]}m██")  # -1 because terminal indexes at 1
     elif mode == "trans":
-        fast_output(f"\033[{row};{column}H\033[{canvas[row-1][column-1]}m▒")
+        fast_output(f"\033[{row};{(column*2)-1}H\033[{canvas[row-1][column-1]}m▒▒")
     elif mode == "str":
-        fast_output(f"\033[{row};{column}H{str(color)}")
+        fast_output(f"\033[39m\033[{row};{(column*2)-1}H{str(color)}")
 
 
 def generate_canvas(rows=40, columns=100):
@@ -69,7 +69,7 @@ def on_press(key):
         if curs_x > 1:
             curs_x -= 1
     elif key == Key.right:
-        if curs_x < canvas_cols:
+        if curs_x < canvas_cols:  # cursor is beeg, remeber
             curs_x += 1
     elif key == Key.up:
         if curs_y > 1:
@@ -93,7 +93,7 @@ fast_output("\033[2J")
 
 canvas = []
 canvas_rows = 40  # get these from server too
-canvas_cols = 100
+canvas_cols = 40
 generate_canvas(canvas_rows, canvas_cols)  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
 output_canvas(canvas_rows, canvas_cols)
 
