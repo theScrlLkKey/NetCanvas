@@ -128,5 +128,5 @@ key_press_sub.start()  # send updates here
 while True:  # begin mainloop, get updates here
     output_canvas(canvas_rows, canvas_cols)   # get changed pixels and update those in canvas before redraw
     output_pixel(curs_y, curs_x, canvas[curs_y-1][curs_x-1], "trans")  # update virtual cursor, can't desync
-    # todo: statusbar: keybinds + cursor pos (placeholder) + bold current color/italic secondary color in keybinds (how?)
+    # todo: statusbar: keybinds + cursor pos (placeholder of 1,1) + bold current color/italic secondary color in keybinds (how?)
     time.sleep(0.1)
