@@ -6,7 +6,6 @@ import threading
 import _thread
 
 
-# move with arrow keys, 1-9 to cycle colors, space to set color. return cursor when done updating from server
 # all terminal stuff is offset by one, ensure canvas stays indexed at zero
 
 
@@ -26,7 +25,7 @@ def output_canvas(rows=40, columns=100):
     fast_output(output_str)
 
 
-def output_pixel(row=20, column=50, color="37", mode="solid", text="null", show_col=False):  # use for cursor and also individual pixel update
+def output_pixel(row=20, column=50, color="37", mode="solid", text="null", show_col=False):  # use for cursor and individual pixel update
     if mode == "solid":
         fast_output(f"\033[{row};{(column*2)-1}H\033[{color}m██")  # -1 because terminal indexes at 1
     elif mode == "trans":
@@ -65,8 +64,12 @@ def on_press(key):
     global curs_x
     global curs_y
     global curs_color
-    # 1-5, q-t, a-g for primary colors, 6-0, y-p, h-; for secondary colors
-    if key == Key.space:  # set color
+    # 1-4, q-r, a-f, z-v for primary draw, 5-8, t-i, g-k, b-, for secondary draw
+    if hasattr(key, 'char'):  # Write the character pressed if available
+        key_color = str(key.char)
+        # todo: determine if prim or sec keys, use correct dict/current color var (is keycolor in prim or sec dict)
+        curs_color = colors[prim_color_key_dict[key_color]]
+    elif key == Key.space:  # set color
         change_character(curs_y-1, curs_x-1, curs_color)  # -1 because curs_xy is terminal (index at 1) and canvas indexes at 0
     elif key == Key.shift:  # set color (secondary)
         change_character(curs_y - 1, curs_x - 1, curs_sec_color)
@@ -86,7 +89,7 @@ def on_press(key):
         fast_output("\033[2J ")
         _thread.interrupt_main()
         exit()
-    output_pixel(1, canvas_cols+1, "37", "str", str(curs_y) + ", " + str(curs_x) + "  ")  # move to statusbar
+    output_pixel(1, canvas_cols+1, "37", "str", str(curs_y) + ", " + str(curs_x) + "  ")  # todo: display in statusbar
 
 
 def start_key_press():
@@ -99,14 +102,20 @@ fast_output("\033[2J")
 canvas = []
 canvas_rows = 40  # get these from server too
 canvas_cols = 40
-generate_canvas(canvas_rows, canvas_cols)  # for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead.
+# for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead, then output live canvas
+generate_canvas(canvas_rows, canvas_cols)
 output_canvas(canvas_rows, canvas_cols)
 
 fast_output("\033[1;1H")  # calib cursor location
 curs_x = 1
 curs_y = 1
 
-colors = [30,31,32,33,34,35,36,37,90,91,92,93,94,95,96,97]
+colors = [30, 31, 32, 33, 34, 35, 36, 37, 90, 91, 92, 93, 94, 95, 96, 97]
+# grays, rgby, m and c
+# 1-4, q-r, a-f, z-v for primary colors, 5-8, t-i, g-k, b-, for secondary colors
+# this is a good idea and very readable (better than ifs)
+prim_color_key_dict = {"1":0, "2":8, "3":7, "4":15, "q":1, "a":9, "w":2, "s":10, "e":4, "d":12, "r":3, "f":11, "z":5, "x":13, "c":6, "v":14}
+sec_color_key_dict = {}  # todo: add these
 
 curs_color = "33"
 curs_sec_color = "90"
@@ -119,5 +128,5 @@ key_press_sub.start()  # send updates here
 while True:  # begin mainloop, get updates here
     output_canvas(canvas_rows, canvas_cols)   # get changed pixels and update those in canvas before redraw
     output_pixel(curs_y, curs_x, canvas[curs_y-1][curs_x-1], "trans")  # update virtual cursor, can't desync
-    # statusbar: keybinds + cursor pos (placeholder) + bold current color/italic secondary color in keybinds
+    # todo: statusbar: keybinds + cursor pos (placeholder) + bold current color/italic secondary color in keybinds (how?)
     time.sleep(0.1)
