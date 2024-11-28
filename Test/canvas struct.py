@@ -11,12 +11,15 @@ def output_canvas():
     pass  # update canvas using fastoutput, iterate through and parse into outputtable chars/locations
 
 
-canvas[10][20] = "30"
-print(canvas)
+# canvas[10][20] = "30"
+# print(canvas)
 # setup canvas, fill with blanks, 40x100 canvas for now
 canvas = []
 for y in range(40):
+    row = []
     for x in range(100):
-        canvas[y][x] = "30"
+        row.append("30")
+    canvas.append(row)
+
 
 print(canvas)
