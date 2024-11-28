@@ -23,7 +23,7 @@ def generate_canvas(rows=40, columns=100):
     for y in range(rows):
         row = []
         for x in range(columns):
-            row.append("30")
+            row.append("90")
         canvas.append(row)
 
 
