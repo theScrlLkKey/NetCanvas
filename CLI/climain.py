@@ -65,17 +65,17 @@ def on_press(key):
     global curs_y
     global curs_color
     # 1-4, q-r, a-f, z-v for direct draw, 5-8, t-i, g-k, b-, for primary draw
-    if hasattr(key, 'char'):  # Write the character pressed if available
+    if hasattr(key, 'char'):
         key_color = str(key.char)
-        # todo: control update: right keyboard palette sets spacebar color, shift is color picker, left keyboard palette directly draws
+        # right keyboard palette sets spacebar color, shift is color picker, left keyboard palette directly draws
         if key_color in set_color_key_dict:
             curs_color = colors[set_color_key_dict[key_color]]
         elif key_color in dir_color_key_dict:
-            change_character(curs_y - 1, curs_x - 1, dir_color_key_dict[key_color])
+            change_character(curs_y - 1, curs_x - 1, colors[dir_color_key_dict[key_color]])
     elif key == Key.space:  # set color
         change_character(curs_y-1, curs_x-1, curs_color)  # -1 because curs_xy is terminal (index at 1) and canvas indexes at 0
-    elif key == Key.shift:  # set color (secondary)
-        change_character(curs_y - 1, curs_x - 1, curs_sec_color)
+    elif key == Key.shift:  # color picker
+        curs_color = canvas[curs_y - 1][curs_x - 1]
     elif key == Key.left:
         if curs_x > 1:
             curs_x -= 1
@@ -118,11 +118,13 @@ for key, val in dict.items(set_color_key_dict):
 
 # initial starting colors in ansi codes
 curs_color = "33"
-curs_sec_color = "90"
 
 # create statusbar static bits - print color blocks, primary keys below, secondary below - arrange in grid?
-# make placeholder for coords, figure out bold/italic? yeah.. hm
-status_fstring = f"<keybinds>"
+# make placeholder for coords, figure out bold/italic? server status? programatically generate keybinds, and update? hm, cpu time
+# also, move to the right side of screen, not bottom
+status_fstring = f"""1 2 3 4  q a  w s  e d  r f  z x  c v
+5 6 7 8  t g  y h  u j  i k  b n  m ,
+1, 1                         offline"""
 
 # status_fstring += "\n"  # made this code work, moved it to a better spot. unsure if this is the best way to print out keybinds...
 # for key, val in dict.items(combined_color_key_dict):
@@ -149,4 +151,4 @@ while True:  # begin mainloop, get updates here
     output_pixel(curs_y, curs_x, canvas[curs_y-1][curs_x-1], "trans")  # update virtual cursor, can't desync
     # todo: statusbar: keybinds + cursor pos (placeholder of 1,1) + bold current color/italic secondary color in keybinds (how?)
     output_pixel(canvas_rows + 1, 1, "37", "str", status_fstring)
-    time.sleep(0.1)
+    time.sleep(0.05)
