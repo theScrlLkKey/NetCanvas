@@ -22,6 +22,12 @@ def output_canvas(rows=40, columns=100):
             output_str += f"\033[{y+1};{(x*2)+1}H"  # +1 because terminal indexes at 1 not 0
             output_str += f"\033[{canvas[y][x]}m██"
         output_str += "\n"
+    #output_str += "\n" # todo: fix this mess I tried to write (is supposed to show a newline, keys seperated by spaces, newline, colors seperated by spaces at the bottom, so far only makes everything blocky
+    # for key, val in dict.items(combined_color_key_dict):
+    #     output_str += "\033[39m" + str(key) + " "
+    # output_str += "\n"
+    # for key, val in dict.items(combined_color_key_dict):
+    #     output_str += f"\033[{val}m██" + " "
     fast_output(output_str)
 
 
@@ -102,13 +108,6 @@ fast_output("\033[2J")
 canvas = []
 canvas_rows = 40  # get these from server too
 canvas_cols = 40
-# for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead, then output live canvas
-generate_canvas(canvas_rows, canvas_cols)
-output_canvas(canvas_rows, canvas_cols)
-
-fast_output("\033[1;1H")  # calib cursor location
-curs_x = 1
-curs_y = 1
 
 colors = [30, 31, 32, 33, 34, 35, 36, 37, 90, 91, 92, 93, 94, 95, 96, 97]
 # grays, rgby, m and c
@@ -116,6 +115,18 @@ colors = [30, 31, 32, 33, 34, 35, 36, 37, 90, 91, 92, 93, 94, 95, 96, 97]
 # this is a good idea and very readable (better than ifs)
 prim_color_key_dict = {"1":0, "2":8, "3":7, "4":15, "q":1, "a":9, "w":2, "s":10, "e":4, "d":12, "r":3, "f":11, "z":5, "x":13, "c":6, "v":14}
 sec_color_key_dict = {}  # todo: add these
+
+combined_color_key_dict = prim_color_key_dict.copy() #Combines the two dictionaries into one
+for key, val in dict.items(sec_color_key_dict):
+    combined_color_key_dict[key] = val
+
+# for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead, then output live canvas
+generate_canvas(canvas_rows, canvas_cols)
+output_canvas(canvas_rows, canvas_cols)
+
+fast_output("\033[1;1H")  # calib cursor location
+curs_x = 1
+curs_y = 1
 
 curs_color = "33"
 curs_sec_color = "90"
