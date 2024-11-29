@@ -123,7 +123,7 @@ status_fstring = f"<keybinds>"
 
 status_fstring += "\n"  # made this code work, moved it to a better spot. useful for now
 for key, val in dict.items(combined_color_key_dict):
-    status_fstring += "\033[39m" + str(key) + " "
+    status_fstring += "\033[39m" + str(key) + "  "
 status_fstring += "\n"
 for key, val in dict.items(combined_color_key_dict):
     status_fstring += f"\033[{colors[val]}m██" + " "
