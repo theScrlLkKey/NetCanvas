@@ -22,12 +22,6 @@ def output_canvas(rows=40, columns=100):
             output_str += f"\033[{y+1};{(x*2)+1}H"  # +1 because terminal indexes at 1 not 0
             output_str += f"\033[{canvas[y][x]}m██"
         output_str += "\n"
-    #output_str += "\n" # todo: fix this mess I tried to write (is supposed to show a newline, keys seperated by spaces, newline, colors seperated by spaces at the bottom, so far only makes everything blocky
-    # for key, val in dict.items(combined_color_key_dict):
-    #     output_str += "\033[39m" + str(key) + " "
-    # output_str += "\n"
-    # for key, val in dict.items(combined_color_key_dict):
-    #     output_str += f"\033[{val}m██" + " "
     fast_output(output_str)
 
 
@@ -103,11 +97,10 @@ def start_key_press():
         listener.join()
 
 
-fast_output("\033[2J")
+fast_output("\033[2J")  # clear screen
 
+# various defines
 canvas = []
-canvas_rows = 40  # get these from server too
-canvas_cols = 40
 
 colors = [30, 31, 32, 33, 34, 35, 36, 37, 90, 91, 92, 93, 94, 95, 96, 97]
 # grays, rgby, m and c
@@ -116,22 +109,34 @@ colors = [30, 31, 32, 33, 34, 35, 36, 37, 90, 91, 92, 93, 94, 95, 96, 97]
 prim_color_key_dict = {"1":0, "2":8, "3":7, "4":15, "q":1, "a":9, "w":2, "s":10, "e":4, "d":12, "r":3, "f":11, "z":5, "x":13, "c":6, "v":14}
 sec_color_key_dict = {}  # todo: add these
 
-combined_color_key_dict = prim_color_key_dict.copy() #Combines the two dictionaries into one
+combined_color_key_dict = prim_color_key_dict.copy()  # Combines the two dictionaries into one (why? - scrl)
 for key, val in dict.items(sec_color_key_dict):
     combined_color_key_dict[key] = val
 
-# for testing, gen canvas. canvas should be made on server, and synced here. connect to server instead, then output live canvas
+# initial starting colors in ansi codes
+curs_color = "33"
+curs_sec_color = "90"
+
+# create statusbar static bits - print color blocks, primary keys below, secondary below - arrange in grid?
+# make placeholder for coords, figure out bold/italic? yeah.. hm
+status_fstring = f"<keybinds>"
+
+status_fstring += "\n"  # made this code work, moved it to a better spot. useful for now
+for key, val in dict.items(combined_color_key_dict):
+    status_fstring += "\033[39m" + str(key) + " "
+status_fstring += "\n"
+for key, val in dict.items(combined_color_key_dict):
+    status_fstring += f"\033[{colors[val]}m██" + " "
+
+# for testing, generate canvas. once server made, connect and get canvas, then output it. no need to generate
+canvas_rows = 40  # get these from server too
+canvas_cols = 40
 generate_canvas(canvas_rows, canvas_cols)
 output_canvas(canvas_rows, canvas_cols)
 
 fast_output("\033[1;1H")  # calib cursor location
 curs_x = 1
 curs_y = 1
-
-curs_color = "33"
-curs_sec_color = "90"
-
-output_pixel(canvas_rows+1, 1, "37", "str", "<keybinds>")
 
 key_press_sub = threading.Thread(target=start_key_press, args=())
 key_press_sub.start()  # send updates here
@@ -140,4 +145,5 @@ while True:  # begin mainloop, get updates here
     output_canvas(canvas_rows, canvas_cols)   # get changed pixels and update those in canvas before redraw
     output_pixel(curs_y, curs_x, canvas[curs_y-1][curs_x-1], "trans")  # update virtual cursor, can't desync
     # todo: statusbar: keybinds + cursor pos (placeholder of 1,1) + bold current color/italic secondary color in keybinds (how?)
+    output_pixel(canvas_rows + 1, 1, "37", "str", status_fstring)
     time.sleep(0.1)
