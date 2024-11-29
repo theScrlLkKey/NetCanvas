@@ -64,11 +64,14 @@ def on_press(key):
     global curs_x
     global curs_y
     global curs_color
-    # 1-4, q-r, a-f, z-v for primary draw, 5-8, t-i, g-k, b-, for secondary draw
+    # 1-4, q-r, a-f, z-v for direct draw, 5-8, t-i, g-k, b-, for primary draw
     if hasattr(key, 'char'):  # Write the character pressed if available
         key_color = str(key.char)
-        # todo: determine if primary or secondary keys, use correct dictionary/current color variable (is keycolor in primary or secondary dictionary)
-        curs_color = colors[prim_color_key_dict[key_color]]
+        # todo: control update: right keyboard palette sets spacebar color, shift is color picker, left keyboard palette directly draws
+        if key_color in set_color_key_dict:
+            curs_color = colors[set_color_key_dict[key_color]]
+        elif key_color in dir_color_key_dict:
+            change_character(curs_y - 1, curs_x - 1, dir_color_key_dict[key_color])
     elif key == Key.space:  # set color
         change_character(curs_y-1, curs_x-1, curs_color)  # -1 because curs_xy is terminal (index at 1) and canvas indexes at 0
     elif key == Key.shift:  # set color (secondary)
@@ -106,11 +109,11 @@ colors = [30, 31, 32, 33, 34, 35, 36, 37, 90, 91, 92, 93, 94, 95, 96, 97]
 # grays, rgby, m and c
 # 1-4, q-r, a-f, z-v for primary colors, 5-8, t-i, g-k, b-, for secondary colors
 # this is a good idea and very readable (better than ifs)
-prim_color_key_dict = {"1":0, "2":8, "3":7, "4":15, "q":1, "a":9, "w":2, "s":10, "e":4, "d":12, "r":3, "f":11, "z":5, "x":13, "c":6, "v":14}
-sec_color_key_dict = {}  # todo: add these
+dir_color_key_dict = {"1":0, "2":8, "3":7, "4":15, "q":1, "a":9, "w":2, "s":10, "e":4, "d":12, "r":3, "f":11, "z":5, "x":13, "c":6, "v":14}
+set_color_key_dict = {"5":0, "6":8, "7":7, "8":15, "t":1, "g":9, "y":2, "h":10, "u":4, "j":12, "i":3, "k":11, "b":5, "n":13, "m":6, ",":14}
 
-combined_color_key_dict = prim_color_key_dict.copy()  # Combines the two dictionaries into one (why? - scrl)
-for key, val in dict.items(sec_color_key_dict):
+combined_color_key_dict = dir_color_key_dict.copy()  # Combines the two dictionaries into one (why? - scrl)
+for key, val in dict.items(set_color_key_dict):
     combined_color_key_dict[key] = val
 
 # initial starting colors in ansi codes
@@ -121,12 +124,12 @@ curs_sec_color = "90"
 # make placeholder for coords, figure out bold/italic? yeah.. hm
 status_fstring = f"<keybinds>"
 
-status_fstring += "\n"  # made this code work, moved it to a better spot. useful for now
-for key, val in dict.items(combined_color_key_dict):
-    status_fstring += "\033[39m" + str(key) + " "
-status_fstring += "\n"
-for key, val in dict.items(combined_color_key_dict):
-    status_fstring += f"\033[{colors[val]}m██" + " "
+# status_fstring += "\n"  # made this code work, moved it to a better spot. unsure if this is the best way to print out keybinds...
+# for key, val in dict.items(combined_color_key_dict):
+#     status_fstring += "\033[39m" + str(key) + " "
+# status_fstring += "\n"
+# for key, val in dict.items(combined_color_key_dict):
+#     status_fstring += f"\033[{colors[val]}m██" + " "
 
 # for testing, generate canvas. once server made, connect and get canvas, then output it. no need to generate
 canvas_rows = 40  # get these from server too
